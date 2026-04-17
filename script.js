@@ -23,7 +23,7 @@ function openSkinPicker() {
     img.onclick = () => {
       if (!currentChar) return;
 
-      let target = currentChar.querySelector("#skin");
+      let target = currentChar.querySelector("skin");
       target.src = img.src;
 
       picker.classList.add("hidden");
@@ -36,23 +36,45 @@ function openSkinPicker() {
 // ADD CHARACTER
 // =====================
 function addCharacter() {
-  const char = document.createElement("img");
-  char.src = "assets/female/skin1.png";
 
+  const char = document.createElement("div");
   char.className = "character";
 
-  // 👉 ตั้งกลางจอ
+  // 👉 โครงตัวละคร (สำคัญมาก)
+char.innerHTML = `
+  <img class="skin" src="assets/${gender}/skin1.png">
+  <img class="hair">
+  <img class="shirt">
+  <img class="pants">
+  <img class="shoes">
+`;
+
+  // 👉 ตำแหน่งกลางจอ
   char.style.position = "absolute";
   char.style.left = "50%";
   char.style.top = "50%";
   char.style.transform = "translate(-50%, -50%) scale(1)";
 
-  // เก็บ scale แยก
   char.dataset.scale = 1;
 
+  // 👉 ให้คลิกแล้วเลือกตัวนี้
+  char.onclick = () => {
+    currentChar = char;
+  };
+
+  // 👉 เปิด drag ด้วย (คุณมีฟังก์ชันแล้ว)
+  enableDrag(char);
+
+  // 👉 เปิด pinch zoom
   enableGesture(char);
 
   document.getElementById("characterLayer").appendChild(char);
+
+  // 👉 set เป็นตัวปัจจุบัน
+  currentChar = char;
+
+  // 👉 เก็บใน array (กัน delete พัง)
+  characters.push(char);
 }
 
 // =====================
