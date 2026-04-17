@@ -3,13 +3,17 @@ let currentPart = "";
 let currentChar = null;
 let characters = [];
 
+// =====================
+// GENDER
+// =====================
 function setGender(g) {
   gender = g;
-
-  // เปิดเลือก skin แทนปุ่ม skin เดิม
   openSkinPicker();
 }
 
+// =====================
+// SKIN PICKER
+// =====================
 function openSkinPicker() {
 
   let picker = document.getElementById("picker");
@@ -21,9 +25,13 @@ function openSkinPicker() {
     img.src = `assets/${gender}/skin${i}.png`;
 
     img.onclick = () => {
-      if (!currentChar) return;
 
-      let target = currentChar.querySelector("skin");
+      if (!currentChar) {
+        alert("กรุณาเลือกตัวละครก่อน");
+        return;
+      }
+
+      let target = currentChar.querySelector(".skin");
       target.src = img.src;
 
       picker.classList.add("hidden");
@@ -32,6 +40,7 @@ function openSkinPicker() {
     picker.appendChild(img);
   }
 }
+
 // =====================
 // ADD CHARACTER
 // =====================
@@ -40,40 +49,39 @@ function addCharacter() {
   const char = document.createElement("div");
   char.className = "character";
 
-  // 👉 โครงตัวละคร (สำคัญมาก)
-char.innerHTML = `
-  <img class="skin" src="assets/${gender}/skin1.png">
-  <img class="hair">
-  <img class="shirt">
-  <img class="pants">
-  <img class="shoes">
-`;
+  char.innerHTML = `
+    <img class="skin" src="assets/${gender}/skin1.png">
+    <img class="hair">
+    <img class="shirt">
+    <img class="pants">
+    <img class="shoes">
+  `;
 
-  // 👉 ตำแหน่งกลางจอ
   char.style.position = "absolute";
   char.style.left = "50%";
   char.style.top = "50%";
-  char.style.transform = "translate(-50%, -50%) scale(1)";
-
+  char.style.transform = "translate(-50%, -50%)"; // ✅ แก้แล้ว
   char.dataset.scale = 1;
 
-  // 👉 ให้คลิกแล้วเลือกตัวนี้
-  char.onclick = () => {
+  // 👉 คลิกเลือกตัวละคร
+  char.addEventListener("click", (e) => {
+    e.stopPropagation();
+
     currentChar = char;
-  };
 
-  // 👉 เปิด drag ด้วย (คุณมีฟังก์ชันแล้ว)
+    document.querySelectorAll(".character").forEach(c => {
+      c.style.outline = "none";
+    });
+
+    char.style.outline = "3px solid yellow";
+  });
+
   enableDrag(char);
-
-  // 👉 เปิด pinch zoom
   enableGesture(char);
 
   document.getElementById("characterLayer").appendChild(char);
 
-  // 👉 set เป็นตัวปัจจุบัน
   currentChar = char;
-
-  // 👉 เก็บใน array (กัน delete พัง)
   characters.push(char);
 }
 
@@ -89,7 +97,7 @@ function deleteCharacter() {
 }
 
 // =====================
-// PICKER (สำคัญ)
+// PICKER
 // =====================
 function openPicker(part) {
 
@@ -104,9 +112,15 @@ function openPicker(part) {
     img.src = `assets/${gender}/${part}${i}.png`;
 
     img.onclick = () => {
-      if (!currentChar) return;
 
-      let target = currentChar.querySelector(`#${part}`);
+      if (!currentChar) {
+        alert("กรุณาเลือกตัวละครก่อน");
+        return;
+      }
+
+      let target = currentChar.querySelector(`.${part}`);
+      if (!target) return;
+
       target.src = img.src;
 
       picker.classList.add("hidden");
@@ -144,9 +158,7 @@ function toggleBG() {
 function showPreview() {
 
   html2canvas(document.getElementById("canvas")).then(c => {
-
     document.getElementById("previewImg").src = c.toDataURL();
-
     document.getElementById("preview").classList.remove("hidden");
   });
 }
@@ -155,12 +167,27 @@ function back() {
   document.getElementById("preview").classList.add("hidden");
 }
 
+function download() {
+  html2canvas(document.getElementById("previewCanvas")).then(c => {
+    let link = document.createElement("a");
+    link.download = "final.png";
+    link.href = c.toDataURL();
+    link.click();
+  });
+}
+
+// =====================
+// AUTO ADD FIRST CHAR
+// =====================
 window.onload = () => {
   if (characters.length === 0) {
     addCharacter();
   }
 };
 
+// =====================
+// DRAG
+// =====================
 function enableDrag(el) {
 
   let startX = 0, startY = 0;
@@ -171,11 +198,8 @@ function enableDrag(el) {
     let rect = el.getBoundingClientRect();
     let parent = document.getElementById("canvas").getBoundingClientRect();
 
-    // กันหลุดซ้าย/บน
     if (rect.left < parent.left) x += parent.left - rect.left;
     if (rect.top < parent.top) y += parent.top - rect.top;
-
-    // กันหลุดขวา/ล่าง
     if (rect.right > parent.right) x -= rect.right - parent.right;
     if (rect.bottom > parent.bottom) y -= rect.bottom - parent.bottom;
   }
@@ -183,7 +207,6 @@ function enableDrag(el) {
   function update() {
     el.style.left = x + "px";
     el.style.top = y + "px";
-    el.style.transform = "translate(0,0)";
   }
 
   // ===== DESKTOP =====
@@ -197,7 +220,7 @@ function enableDrag(el) {
       y = e.clientY - startY;
 
       update();
-      clamp();   // 👈 เพิ่มตรงนี้
+      clamp();
       update();
     }
 
@@ -213,18 +236,23 @@ function enableDrag(el) {
   // ===== MOBILE =====
   el.addEventListener("touchstart", (e) => {
 
+    if (e.touches.length > 1) return;
+
     let t = e.touches[0];
     startX = t.clientX - x;
     startY = t.clientY - y;
 
     function move(e) {
+
+      if (e.touches.length > 1) return;
+
       let t = e.touches[0];
 
       x = t.clientX - startX;
       y = t.clientY - startY;
 
       update();
-      clamp();   // 👈 เพิ่มตรงนี้
+      clamp();
       update();
     }
 
@@ -238,6 +266,48 @@ function enableDrag(el) {
   });
 }
 
+// =====================
+// PINCH ZOOM
+// =====================
+function enableGesture(el) {
+
+  let startDist = 0;
+  let startScale = 1;
+
+  function getDistance(touches) {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  el.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 2) {
+      startDist = getDistance(e.touches);
+      startScale = parseFloat(el.dataset.scale || 1);
+    }
+  });
+
+  el.addEventListener("touchmove", (e) => {
+
+    if (e.touches.length === 2) {
+      e.preventDefault();
+
+      const newDist = getDistance(e.touches);
+
+      let scale = startScale * (newDist / startDist);
+
+      scale = Math.max(0.5, Math.min(scale, 3));
+
+      el.dataset.scale = scale;
+
+      el.style.transform = `scale(${scale})`; // ✅ ไม่ชน drag
+    }
+  });
+}
+
+// =====================
+// LOGO
+// =====================
 function addLogo(src) {
 
   let img = document.createElement("img");
@@ -249,6 +319,9 @@ function addLogo(src) {
   enableTransform(img);
 }
 
+// =====================
+// LOGO TRANSFORM
+// =====================
 function enableTransform(el) {
 
   let x = 200, y = 200;
@@ -257,7 +330,6 @@ function enableTransform(el) {
   let startX = 0, startY = 0;
   let startDist = 0;
 
-  // ================= DRAG =================
   el.addEventListener("mousedown", (e) => {
 
     startX = e.clientX - x;
@@ -266,7 +338,6 @@ function enableTransform(el) {
     function move(e) {
       x = e.clientX - startX;
       y = e.clientY - startY;
-
       update();
     }
 
@@ -279,7 +350,6 @@ function enableTransform(el) {
     document.addEventListener("mouseup", up);
   });
 
-  // ================= TOUCH =================
   el.addEventListener("touchstart", (e) => {
 
     if (e.touches.length === 1) {
@@ -331,50 +401,13 @@ function enableTransform(el) {
   }
 }
 
-function back() {
-  document.getElementById("preview").classList.add("hidden");
-}
+// =====================
+// CLICK BG = UNSELECT
+// =====================
+document.getElementById("canvas").addEventListener("click", () => {
+  currentChar = null;
 
-function download() {
-  html2canvas(document.getElementById("previewCanvas")).then(c => {
-    let link = document.createElement("a");
-    link.download = "final.png";
-    link.href = c.toDataURL();
-    link.click();
+  document.querySelectorAll(".character").forEach(c => {
+    c.style.outline = "none";
   });
-}
-
-function enableGesture(el) {
-  let startDist = 0;
-  let startScale = 1;
-
-  el.addEventListener("touchstart", (e) => {
-    if (e.touches.length === 2) {
-      startDist = getDistance(e.touches);
-      startScale = parseFloat(el.dataset.scale || 1);
-    }
-  });
-
-  el.addEventListener("touchmove", (e) => {
-    if (e.touches.length === 2) {
-      e.preventDefault();
-
-      const newDist = getDistance(e.touches);
-      let scale = startScale * (newDist / startDist);
-
-      // จำกัดขนาด
-      scale = Math.max(0.5, Math.min(scale, 3));
-
-      el.dataset.scale = scale;
-
-      el.style.transform =
-        `translate(-50%, -50%) scale(${scale})`;
-    }
-  });
-}
-
-function getDistance(touches) {
-  const dx = touches[0].clientX - touches[1].clientX;
-  const dy = touches[0].clientY - touches[1].clientY;
-  return Math.sqrt(dx * dx + dy * dy);
-}
+});
