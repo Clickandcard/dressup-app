@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, height=1920, initial-scale=1.0">
+<title>Dress Up</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="app">
+
+  <!-- CANVAS -->
+  <div id="canvas">
+    <img id="bg" src="bg1.png">
+
+    <div id="characters"></div>
+  </div>
+
+  <!-- CONTROL -->
+  <div id="controls">
+
+    <!-- GENDER -->
+    <img src="icon/female.png" onclick="setGender('female')">
+    <img src="icon/male.png" onclick="setGender('male')">
+
+    <!-- PART -->
+    <img src="icon/hair.png" onclick="openPicker('hair')">
+    <img src="icon/shirt.png" onclick="openPicker('shirt')">
+    <img src="icon/pants.png" onclick="openPicker('pants')">
+    <img src="icon/shoes.png" onclick="openPicker('shoes')">
+
+    <!-- BG -->
+    <img src="icon/bg.png" onclick="toggleBG()">
+
+    <!-- ACTION -->
+    <button onclick="addCharacter()">ADD</button>
+    <button onclick="deleteCharacter()">DELETE</button>
+    <button onclick="showPreview()">SAVE</button>
+    <button onclick="back()">BACK</button>
+
+  </div>
+
+  <!-- PICKER -->
+  <div id="picker" class="hidden"></div>
+
+  <!-- BG PICK -->
+  <div id="bgSelect" class="hidden">
+    <img src="bg1.png" onclick="setBG('bg1.png')">
+    <img src="bg2.png" onclick="setBG('bg2.png')">
+    <img src="bg3.png" onclick="setBG('bg3.png')">
+  </div>
+
+<!-- PREVIEW POPUP -->
+<div id="preview" class="hidden">
+
+  <div id="previewCanvas">
+    <img id="previewImg">
+  </div>
+
+  <!-- LOGO SELECT -->
+  <div id="logoPicker">
+    <img src="logo1.png" onclick="addLogo('logo1.png')">
+    <img src="logo2.png" onclick="addLogo('logo2.png')">
+  </div>
+
+  <div id="previewButtons">
+    <button onclick="download()">DOWNLOAD</button>
+    <button onclick="back()">EDIT</button>
+  </div>
+
+</div>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,125 @@
+body {
+  margin: 0;
+  background: black;
+  display: flex;
+  justify-content: center;
+}
+
+#app {
+  width: 1080px;
+  height: 1920px;
+  position: relative;
+}
+
+#canvas {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+#bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.character {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.character img {
+  position: absolute;
+  width: 400px;
+}
+
+#controls {
+  position: absolute;
+  bottom: 40px;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+#controls img {
+  width: 70px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 10px;
+}
+
+button {
+  padding: 10px 20px;
+}
+
+#picker {
+  position: absolute;
+  bottom: 200px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+#picker img {
+  width: 120px;
+}
+
+.hidden {
+  display: none;
+}
+
+#preview {
+  position: absolute;
+  width: 1080px;
+  height: 1920px;
+  top: 0;
+  left: 0;
+  background: black;
+  z-index: 999;
+}
+
+#previewCanvas {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+#previewImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.logo {
+  position: absolute;
+  width: 200px;
+  top: 200px;
+  left: 200px;
+}
+
+#logoPicker {
+  position: absolute;
+  bottom: 180px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+#logoPicker img {
+  width: 120px;
+}
+
+#previewButtons {
+  position: absolute;
+  bottom: 60px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
