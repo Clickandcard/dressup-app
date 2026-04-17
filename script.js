@@ -36,33 +36,23 @@ function openSkinPicker() {
 // ADD CHARACTER
 // =====================
 function addCharacter() {
+  const char = document.createElement("img");
+  char.src = "assets/female/skin1.png";
 
-  if (characters.length >= 5) return;
+  char.className = "character";
 
-  let div = document.createElement("div");
-  div.className = "character";
+  // 👉 ตั้งกลางจอ
+  char.style.position = "absolute";
+  char.style.left = "50%";
+  char.style.top = "50%";
+  char.style.transform = "translate(-50%, -50%) scale(1)";
 
-  let parts = ["skin","hair","pants","shirt","shoes"];
-  parts.forEach(p=>{
-    let img = document.createElement("img");
-    img.id = p;
+  // เก็บ scale แยก
+  char.dataset.scale = 1;
 
-    // 👇 เพิ่มตรงนี้
-    if (p === "skin") {
-      img.src = `assets/${gender}/skin1.png`;
-    }
+  enableGesture(char);
 
-    div.appendChild(img);
-  });
-
-  div.onclick = () => currentChar = div;
-
-  document.getElementById("characters").appendChild(div);
-  characters.push(div);
-  currentChar = div;
-
-  // 👇 เปิด drag
-  enableDrag(div);
+  document.getElementById("characterLayer").appendChild(char);
 }
 
 // =====================
@@ -330,4 +320,39 @@ function download() {
     link.href = c.toDataURL();
     link.click();
   });
+}
+
+function enableGesture(el) {
+  let startDist = 0;
+  let startScale = 1;
+
+  el.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 2) {
+      startDist = getDistance(e.touches);
+      startScale = parseFloat(el.dataset.scale || 1);
+    }
+  });
+
+  el.addEventListener("touchmove", (e) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+
+      const newDist = getDistance(e.touches);
+      let scale = startScale * (newDist / startDist);
+
+      // จำกัดขนาด
+      scale = Math.max(0.5, Math.min(scale, 3));
+
+      el.dataset.scale = scale;
+
+      el.style.transform =
+        `translate(-50%, -50%) scale(${scale})`;
+    }
+  });
+}
+
+function getDistance(touches) {
+  const dx = touches[0].clientX - touches[1].clientX;
+  const dy = touches[0].clientY - touches[1].clientY;
+  return Math.sqrt(dx * dx + dy * dy);
 }
