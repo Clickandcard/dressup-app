@@ -12,27 +12,38 @@ body {
 }
 
 #canvas {
-  width: 100%;
-  height: 100%;
   position: relative;
+  width: 1080px;
+  height: 1920px;
+  overflow: hidden;
+  background: #fff;
 }
 
+/* 🔒 ล็อคพื้นหลัง */
 #bg {
   position: absolute;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+
+  touch-action: none;       /* ❗ ห้าม gesture */
+  pointer-events: none;     /* ❗ คลิกไม่โดน */
 }
 
-.character {
+/* layer ตัวละคร */
+#characterLayer {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
 }
 
 .character img {
   position: absolute;
   width: 400px;
+}
+
+.character {
+  touch-action: none; /* สำคัญมาก */
 }
 
 #controls {
