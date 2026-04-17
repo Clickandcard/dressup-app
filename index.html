@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="th">
-<head>
+<head> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1080, height=1920, initial-scale=1.0">
 <title>Dress Up</title>
@@ -12,11 +13,11 @@
 <div id="app">
 
   <!-- CANVAS -->
-  <div id="canvas">
-    <img id="bg" src="bg1.png">
+<div id="canvas">
+  <img id="bg" src="bg1.png">
 
-    <div id="characters"></div>
-  </div>
+  <div id="characterLayer"></div>
+</div>
 
   <!-- CONTROL -->
   <div id="controls">
@@ -38,7 +39,6 @@
     <button onclick="addCharacter()">ADD</button>
     <button onclick="deleteCharacter()">DELETE</button>
     <button onclick="showPreview()">SAVE</button>
-    <button onclick="back()">BACK</button>
 
   </div>
 
